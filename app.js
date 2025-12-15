@@ -1,169 +1,220 @@
-// Espera a que todo el contenido del DOM esté cargado antes de ejecutar el script
+// Script general: registro/login (usuario y admin), sesión y reportes en localStorage
 document.addEventListener('DOMContentLoaded', () => {
-
-    // --- SELECCIÓN DE ELEMENTOS DEL DOM ---
-    const form = document.getElementById('registro-ciudadano-form');
-    const nombreInput = document.getElementById('nombre');
-    const correoInput = document.getElementById('correo');
-    const edadInput = document.getElementById('edad');
-    const dniInput = document.getElementById('dni');
     const notificacionEl = document.getElementById('notificacion');
-    const totalCiudadanosEl = document.getElementById('total-ciudadanos');
-    const listaUltimosCiudadanosEl = document.getElementById('lista-ultimos-ciudadanos');
 
-    // --- EVENT LISTENERS ---
-    // Escuchar el evento 'submit' del formulario
-    form.addEventListener('submit', (e) => {
-        e.preventDefault(); // Evita que el formulario se envíe de la manera tradicional
-        registrarCiudadano();
-    });
+    // Helpers para localStorage
+    const getUsers = () => JSON.parse(localStorage.getItem('users')) || [];
+    const saveUsers = (users) => localStorage.setItem('users', JSON.stringify(users));
+    const getAdmins = () => JSON.parse(localStorage.getItem('admins')) || [];
+    const saveAdmins = (admins) => localStorage.setItem('admins', JSON.stringify(admins));
+    const getReports = () => JSON.parse(localStorage.getItem('reports')) || [];
+    const saveReports = (reports) => localStorage.setItem('reports', JSON.stringify(reports));
 
-    // Validar en tiempo real mientras el usuario escribe
-    nombreInput.addEventListener('input', () => validarCampo(nombreInput, validarNombre));
-    correoInput.addEventListener('input', () => validarCampo(correoInput, validarCorreo));
-    edadInput.addEventListener('input', () => validarCampo(edadInput, validarEdad));
-    dniInput.addEventListener('input', () => validarCampo(dniInput, validarDNI));
-    
-    // --- LÓGICA DE VALIDACIÓN ---
+    const setCurrentUser = (user) => localStorage.setItem('currentUser', JSON.stringify(user));
+    const getCurrentUser = () => JSON.parse(localStorage.getItem('currentUser')) || null;
+    const clearCurrentUser = () => localStorage.removeItem('currentUser');
 
-    // Valida que el nombre tenga al menos 3 caracteres
-    const validarNombre = (nombre) => nombre.trim().length >= 3;
-
-    // Valida que el correo tenga un formato válido usando una expresión regular
-    const validarCorreo = (correo) => {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(correo.trim());
-    };
-    
-    // Valida que la edad sea un número y que la persona sea mayor de edad
-    const validarEdad = (edad) => {
-        const edadNum = parseInt(edad, 10);
-        return !isNaN(edadNum) && edadNum >= 18;
-    };
-    
-    // Valida que el DNI tenga exactamente 8 dígitos numéricos
-    const validarDNI = (dni) => {
-        const regex = /^\d{8}$/;
-        return regex.test(dni.trim());
+    const showNotification = (message, type = 'exito') => {
+        if (!notificacionEl) return;
+        notificacionEl.textContent = message;
+        notificacionEl.className = `notificacion ${type} visible`;
+        setTimeout(() => notificacionEl.classList.remove('visible'), 3000);
     };
 
-    /**
-     * Función genérica para validar un campo y mostrar/ocultar mensaje de error
-     * @param {HTMLElement} input - El elemento del input a validar
-     * @param {Function} funcionValidacion - La función específica que valida el valor
-     * @returns {boolean} - True si es válido, false si no
-     */
-    const validarCampo = (input, funcionValidacion) => {
-        const esValido = funcionValidacion(input.value);
-        const mensajeErrorEl = document.getElementById(`error-${input.id}`);
-        let mensaje = '';
+    // Registro de usuario (se usa en register.html)
+    const registerUser = ({nombre, correo, password}) => {
+        const users = getUsers();
+        if (users.find(u => u.correo === correo)) {
+            showNotification('Ya existe una cuenta con este correo.', 'error');
+            return false;
+        }
+        const user = { id: Date.now(), nombre, correo, password: btoa(password), role: 'user' };
+        users.push(user);
+        saveUsers(users);
+        showNotification('Registro exitoso. Ahora puedes iniciar sesión.', 'exito');
+        return true;
+    };
 
-        if (!esValido) {
-            input.classList.add('invalido');
-            input.classList.remove('valido');
-            // Mensajes de error específicos
-            switch(input.id) {
-                case 'nombre': mensaje = 'El nombre debe tener al menos 3 caracteres.'; break;
-                case 'correo': mensaje = 'Por favor, ingresa un correo electrónico válido.'; break;
-                case 'edad': mensaje = 'Debes ser mayor de 18 años.'; break;
-                case 'dni': mensaje = 'El DNI debe contener 8 dígitos numéricos.'; break;
+    // Login usuario
+    const loginUser = ({correo, password}) => {
+        const users = getUsers();
+        const user = users.find(u => u.correo === correo && u.password === btoa(password));
+        if (!user) {
+            showNotification('Credenciales inválidas.', 'error');
+            return false;
+        }
+        setCurrentUser({ id: user.id, nombre: user.nombre, correo: user.correo, role: user.role });
+        showNotification('Inicio de sesión exitoso.', 'exito');
+        return true;
+    };
+
+    // Registro admin
+    const registerAdmin = ({nombre, correo, password}) => {
+        const admins = getAdmins();
+        if (admins.find(a => a.correo === correo)) {
+            showNotification('Ya existe un administrador con este correo.', 'error');
+            return false;
+        }
+        const admin = { id: Date.now(), nombre, correo, password: btoa(password), role: 'admin' };
+        admins.push(admin);
+        saveAdmins(admins);
+        showNotification('Administrador registrado.', 'exito');
+        return true;
+    };
+
+    // Login admin
+    const loginAdmin = ({correo, password}) => {
+        const admins = getAdmins();
+        const admin = admins.find(a => a.correo === correo && a.password === btoa(password));
+        if (!admin) {
+            showNotification('Credenciales de administrador inválidas.', 'error');
+            return false;
+        }
+        setCurrentUser({ id: admin.id, nombre: admin.nombre, correo: admin.correo, role: 'admin' });
+        showNotification('Ingreso de administrador correcto.', 'exito');
+        return true;
+    };
+
+    // Logout
+    const logout = () => {
+        clearCurrentUser();
+        showNotification('Sesión cerrada.', 'exito');
+        // reload para actualizar UI
+        setTimeout(() => location.reload(), 600);
+    };
+
+    // Envío de reporte
+    const submitReport = ({titulo, tipo, descripcion, ubicacion, anonimo}) => {
+        const current = getCurrentUser();
+        if (!anonimo && !current) {
+            showNotification('Debes iniciar sesión o marcar como anónimo.', 'error');
+            return false;
+        }
+        const report = {
+            id: 'R' + Date.now(),
+            titulo,
+            tipo,
+            descripcion,
+            ubicacion: ubicacion || '',
+            fecha: new Date().toISOString(),
+            estado: 'recibido',
+            anonimo: !!anonimo,
+            reporter: anonimo ? { nombre: 'Anónimo', correo: '' } : { nombre: current.nombre, correo: current.correo }
+        };
+        const reports = getReports();
+        reports.push(report);
+        saveReports(reports);
+        showNotification('Reporte enviado. Código: ' + report.id, 'exito');
+        return true;
+    };
+
+    // --- Conexión con formularios si existen en la página ---
+
+    // Formulario de registro de usuario (register.html)
+    const formRegister = document.getElementById('form-register');
+    if (formRegister) {
+        formRegister.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nombre = formRegister.querySelector('#reg-nombre').value.trim();
+            const correo = formRegister.querySelector('#reg-correo').value.trim();
+            const password = formRegister.querySelector('#reg-password').value;
+            if (nombre.length < 3 || password.length < 6) {
+                showNotification('Nombre mínimo 3 caracteres y contraseña mínimo 6.', 'error');
+                return;
             }
-        } else {
-            input.classList.remove('invalido');
-            input.classList.add('valido');
-        }
-        
-        mensajeErrorEl.textContent = mensaje;
-        return esValido;
-    };
+            if (registerUser({nombre, correo, password})) {
+                setTimeout(() => location.href = 'login.html', 800);
+            }
+        });
+    }
 
-    // --- LÓGICA PRINCIPAL ---
+    // Formulario login usuario (login.html)
+    const formLogin = document.getElementById('form-login');
+    if (formLogin) {
+        formLogin.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const correo = formLogin.querySelector('#login-correo').value.trim();
+            const password = formLogin.querySelector('#login-password').value;
+            if (loginUser({correo, password})) {
+                setTimeout(() => location.href = 'index.html', 600);
+            }
+        });
+    }
 
-    // Procesa el registro del ciudadano
-    const registrarCiudadano = () => {
-        // Ejecuta todas las validaciones
-        const esNombreValido = validarCampo(nombreInput, validarNombre);
-        const esCorreoValido = validarCampo(correoInput, validarCorreo);
-        const esEdadValida = validarCampo(edadInput, validarEdad);
-        const esDNIValido = validarCampo(dniInput, validarDNI);
+    // Formulario admin register
+    const formAdminRegister = document.getElementById('form-admin-register');
+    if (formAdminRegister) {
+        formAdminRegister.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nombre = formAdminRegister.querySelector('#admin-reg-nombre').value.trim();
+            const correo = formAdminRegister.querySelector('#admin-reg-correo').value.trim();
+            const password = formAdminRegister.querySelector('#admin-reg-password').value;
+            if (nombre.length < 3 || password.length < 6) {
+                showNotification('Nombre mínimo 3 caracteres y contraseña mínimo 6.', 'error');
+                return;
+            }
+            if (registerAdmin({nombre, correo, password})) {
+                setTimeout(() => location.href = 'admin_login.html', 800);
+            }
+        });
+    }
 
-        // Si todos los campos son válidos, procede a guardar
-        if (esNombreValido && esCorreoValido && esEdadValida && esDNIValido) {
-            const nuevoCiudadano = {
-                id: Date.now(), // ID único basado en la fecha actual
-                nombre: nombreInput.value.trim(),
-                correo: correoInput.value.trim(),
-                edad: parseInt(edadInput.value),
-                dni: dniInput.value.trim(),
-            };
+    // Formulario admin login
+    const formAdminLogin = document.getElementById('form-admin-login');
+    if (formAdminLogin) {
+        formAdminLogin.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const correo = formAdminLogin.querySelector('#admin-login-correo').value.trim();
+            const password = formAdminLogin.querySelector('#admin-login-password').value;
+            if (loginAdmin({correo, password})) {
+                setTimeout(() => location.href = 'dashboard.html', 600);
+            }
+        });
+    }
 
-            guardarEnLocalStorage(nuevoCiudadano);
-            mostrarNotificacion('¡Ciudadano registrado con éxito!', 'exito');
-            form.reset(); // Limpia el formulario
-            // Quita las clases de validación de los campos
-            [nombreInput, correoInput, edadInput, dniInput].forEach(input => {
-                input.classList.remove('valido', 'invalido');
-            });
-            actualizarEstadisticas(); // Actualiza la UI
-        } else {
-            mostrarNotificacion('Por favor, corrige los errores en el formulario.', 'error');
-        }
-    };
+    // Formulario de reporte (index.html)
+    const formReporte = document.getElementById('form-reporte');
+    if (formReporte) {
+        const anonimoEl = document.getElementById('anonimo');
+        const infoUsuarioEl = document.getElementById('info-usuario');
+        const usuarioNombreEl = document.getElementById('usuario-nombre');
+        const usuarioCorreoEl = document.getElementById('usuario-correo');
+        const btnLogout = document.getElementById('btn-logout');
 
-    // --- MANEJO DE LOCALSTORAGE ---
+        const refreshUserUI = () => {
+            const current = getCurrentUser();
+            if (current) {
+                infoUsuarioEl.style.display = 'block';
+                usuarioNombreEl.textContent = current.nombre;
+                usuarioCorreoEl.textContent = current.correo;
+            } else {
+                infoUsuarioEl.style.display = 'none';
+            }
+        };
 
-    // Obtiene los ciudadanos del localStorage
-    const obtenerCiudadanos = () => {
-        return JSON.parse(localStorage.getItem('ciudadanos')) || [];
-    };
-    
-    // Guarda un nuevo ciudadano en el localStorage
-    const guardarEnLocalStorage = (ciudadano) => {
-        const ciudadanos = obtenerCiudadanos();
-        ciudadanos.push(ciudadano);
-        localStorage.setItem('ciudadanos', JSON.stringify(ciudadanos));
-    };
+        if (btnLogout) btnLogout.addEventListener('click', logout);
 
-    // --- MANIPULACIÓN DEL DOM Y UI ---
+        formReporte.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const titulo = formReporte.querySelector('#titulo').value.trim();
+            const tipo = formReporte.querySelector('#tipo').value;
+            const descripcion = formReporte.querySelector('#descripcion').value.trim();
+            const ubicacion = formReporte.querySelector('#ubicacion').value.trim();
+            const anonimo = anonimoEl && anonimoEl.checked;
+            if (!titulo || !descripcion) {
+                showNotification('Completa título y descripción.', 'error');
+                return;
+            }
+            if (submitReport({titulo, tipo, descripcion, ubicacion, anonimo})) {
+                formReporte.reset();
+                refreshUserUI();
+            }
+        });
 
-    /**
-     * Muestra una notificación temporal en la pantalla
-     * @param {string} mensaje - El texto a mostrar
-     * @param {string} tipo - 'exito' o 'error' para el estilo CSS
-     */
-    const mostrarNotificacion = (mensaje, tipo) => {
-        notificacionEl.textContent = mensaje;
-        notificacionEl.className = `notificacion ${tipo} visible`; // Agrega clases para estilo y visibilidad
+        refreshUserUI();
+    }
 
-        // Oculta la notificación después de 3 segundos
-        setTimeout(() => {
-            notificacionEl.classList.remove('visible');
-        }, 3000);
-    };
-
-    // Actualiza las estadísticas en la página
-    const actualizarEstadisticas = () => {
-        const ciudadanos = obtenerCiudadanos();
-        
-        // Actualiza el contador total
-        totalCiudadanosEl.textContent = ciudadanos.length;
-
-        // Limpia la lista de últimos ciudadanos
-        listaUltimosCiudadanosEl.innerHTML = '';
-
-        if (ciudadanos.length === 0) {
-            listaUltimosCiudadanosEl.innerHTML = '<li>No hay registros aún.</li>';
-        } else {
-            // Muestra los últimos 5 ciudadanos registrados
-            const ultimosCinco = ciudadanos.slice(-5).reverse();
-            ultimosCinco.forEach(ciudadano => {
-                const li = document.createElement('li');
-                li.textContent = `${ciudadano.nombre} (DNI: ...${ciudadano.dni.slice(-4)})`;
-                listaUltimosCiudadanosEl.appendChild(li);
-            });
-        }
-    };
-    
-    // Llama a la función de actualizar estadísticas al cargar la página por primera vez
-    actualizarEstadisticas();
+    // Botón global de logout si existe en otras páginas
+    const btnLogoutGlobal = document.getElementById('logout-global');
+    if (btnLogoutGlobal) btnLogoutGlobal.addEventListener('click', logout);
 });

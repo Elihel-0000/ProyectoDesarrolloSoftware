@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Administrador - Reporte Urbano Cusco</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="contenedor">
+            <div class="logo">
+                <img src="imagen1.jpg" alt="Logo" height="50">
+                <span>Reporte Urbano Cusco</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="admin_login.html">Login Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="contenedor">
+        <h2>Registro de Administrador</h2>
+        <form id="form-admin-register">
+            <div class="form-grupo">
+                <label for="admin-reg-nombre">Nombre</label>
+                <input id="admin-reg-nombre" type="text" required>
+            </div>
+            <div class="form-grupo">
+                <label for="admin-reg-correo">Correo electrónico</label>
+                <input id="admin-reg-correo" type="email" required>
+            </div>
+            <div class="form-grupo">
+                <label for="admin-reg-password">Contraseña</label>
+                <input id="admin-reg-password" type="password" required>
+            </div>
+            <button class="btn" type="submit">Registrar Administrador</button>
+        </form>
+    </main>
+
+    <footer>
+        <div class="contenedor">
+            <p>&copy; 2025 Municipalidad Provincial del Cusco.</p>
+        </div>
+    </footer>
+
+    <div id="notificacion" class="notificacion"></div>
+    <script src="app.js"></script>
+</body>
+</html>
