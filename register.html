@@ -25,16 +25,47 @@
     <main class="contenedor">
         <h2>Registro de Usuario</h2>
         <form id="form-register">
-            <div class="form-grupo">
-                <label for="reg-nombre">Nombre completo</label>
-                <input id="reg-nombre" type="text" required>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-grupo">
+                    <label for="reg-nombre">Nombre completo *</label>
+                    <input id="reg-nombre" type="text" required>
+                </div>
+                <div class="form-grupo">
+                    <label for="reg-dni">DNI *</label>
+                    <input id="reg-dni" type="text" placeholder="8 dígitos" maxlength="8" required>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-grupo">
+                    <label for="reg-correo">Correo electrónico *</label>
+                    <input id="reg-correo" type="email" required>
+                </div>
+                <div class="form-grupo">
+                    <label for="reg-telefono">Teléfono/Celular *</label>
+                    <input id="reg-telefono" type="tel" placeholder="+51 9..." required>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-grupo">
+                    <label for="reg-fecha-nac">Fecha de Nacimiento *</label>
+                    <input id="reg-fecha-nac" type="date" required>
+                </div>
+                <div class="form-grupo">
+                    <label for="reg-sexo">Sexo *</label>
+                    <select id="reg-sexo" required>
+                        <option value="">Selecciona...</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                        <option value="O">Otro</option>
+                    </select>
+                </div>
             </div>
             <div class="form-grupo">
-                <label for="reg-correo">Correo electrónico</label>
-                <input id="reg-correo" type="email" required>
+                <label for="reg-direccion">Dirección (opcional)</label>
+                <input id="reg-direccion" type="text" placeholder="Calle, número, zona">
             </div>
             <div class="form-grupo">
-                <label for="reg-password">Contraseña (mín. 6 caracteres)</label>
+                <label for="reg-password">Contraseña (mín. 6 caracteres) *</label>
                 <input id="reg-password" type="password" required>
             </div>
             <button class="btn" type="submit">Registrar</button>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Detalle de Reporte</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="contenedor">
+            <div class="logo">
+                <img src="imagen1.jpg" alt="Logo" height="50">
+                <span>Detalle del Reporte</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html">Volver al Dashboard</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="contenedor">
+        <h2>Detalle de Reporte</h2>
+        <div id="detalle" class="resultado-seguimiento"></div>
+    </main>
+
+    <footer>
+        <div class="contenedor">
+            <p>&copy; 2025 Municipalidad Provincial del Cusco.</p>
+        </div>
+    </footer>
+
+    <script>
+    (function(){
+        function getQueryParam(name){
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+        const id = getQueryParam('id');
+        const cont = document.getElementById('detalle');
+        if (!id) {
+            cont.innerHTML = '<p>Código de reporte no proporcionado.</p>';
+        } else {
+            const reports = JSON.parse(localStorage.getItem('reports')||'[]');
+            const r = reports.find(x=>x.id===id);
+            if (!r) {
+                cont.innerHTML = '<p>Reporte no encontrado.</p>';
+            } else {
+                cont.innerHTML = `
+                    <h3>${r.titulo}</h3>
+                    <p><strong>Código:</strong> ${r.id}</p>
+                    <p><strong>Tipo:</strong> ${r.tipo}</p>
+                    <p><strong>Descripción:</strong> ${r.descripcion}</p>
+                    <p><strong>Distrito:</strong> ${r.distrito || 'No especificado'}</p>
+                    <p><strong>Urbanización/Calle:</strong> ${r.urbanizacion || 'No especificado'}</p>
+                    <p><strong>Referencia:</strong> ${r.referencia || 'No especificado'}</p>
+                    <p><strong>Reportante:</strong> ${r.reporter?.nombre || 'Anónimo'}</p>
+                    <p><strong>Fecha:</strong> ${new Date(r.fecha).toLocaleString('es-PE')}</p>
+                    <p><strong>Estado:</strong> <span class="badge ${r.estado}">${r.estado.charAt(0).toUpperCase()+r.estado.slice(1)}</span></p>
+                `;
+                if (r.anonimo) {
+                    cont.innerHTML += '<p style="color:#666; font-size:0.9rem;">Reporte enviado como anónimo.</p>';
+                }
+            }
+        }
+    })();
+    </script>
+</body>
+</html>

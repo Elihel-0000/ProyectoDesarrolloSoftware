@@ -32,18 +32,40 @@
     </header>
 
     <main>
-        <section id="inicio" class="contenedor">
-            <h2>Bienvenido al Sistema de Reporte Ciudadano</h2>
-            <p>Juntos mejoramos nuestra ciudad. Reporta incidencias y ayuda a la Municipalidad del Cusco a darles solución.</p>
-            <div class="galeria-inicio">
-                <figure>
-                    <img src="imagen2.jpg" alt="Plaza de Armas de Cusco">
-                    <figcaption>Infraestructura y ornato.</figcaption>
-                </figure>
-                <figure>
-                    <img src="imagen3.jpg" height="200" alt="Alumbrado público en Cusco">
-                    <figcaption>Servicios públicos eficientes.</figcaption>
-                </figure>
+        <section id="inicio" class="hero-section">
+            <div class="contenedor hero-content">
+                <h1>Sistema de Reporte de Incidencias Urbanas</h1>
+                <p class="hero-subtitle">Tu voz importa. Reporta problemas en la ciudad y ayudamos juntos a mejorar Cusco.</p>
+                <div class="hero-buttons">
+                    <a href="#reportes" class="btn btn-primary">Hacer Reporte</a>
+                    <a href="login.html" class="btn btn-secondary">Iniciar Sesión</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="contenedor section-features">
+            <h2>¿Cómo Funciona?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>Reporta</h3>
+                    <p>Envía reportes sobre incidencias urbanas de forma anónima o con tu cuenta registrada.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📍</div>
+                    <h3>Localiza</h3>
+                    <p>Especifica la ubicación exacta del problema para que sea atendido rápidamente.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3>Monitorea</h3>
+                    <p>Sigue el estado de tu reporte en tiempo real con el código que recibirás.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏗️</div>
+                    <h3>Resuelve</h3>
+                    <p>Contribuye a soluciones rápidas para mejorar la calidad de vida urbana.</p>
+                </div>
             </div>
         </section>
 
@@ -75,8 +97,25 @@
                                 <textarea id="descripcion" name="descripcion" rows="4" placeholder="Describe la incidencia" required></textarea>
                             </div>
                             <div class="form-grupo">
-                                <label for="ubicacion">Ubicación (opcional):</label>
-                                <input type="text" id="ubicacion" name="ubicacion" placeholder="Calle, referencia, zona">
+                                <label for="distrito">Distrito del Cusco *</label>
+                                <select id="distrito" name="distrito" required>
+                                    <option value="">Selecciona distrito...</option>
+                                    <option value="cusco">Cusco</option>
+                                    <option value="san-sebastian">San Sebastián</option>
+                                    <option value="santiago">Santiago</option>
+                                    <option value="wanchaq">Wanchaq</option>
+                                    <option value="poroy">Poroy</option>
+                                    <option value="san-jeronimo">San Jerónimo</option>
+                                    <option value="saylla">Saylla</option>
+                                </select>
+                            </div>
+                            <div class="form-grupo">
+                                <label for="urbanizacion">Urbanización / Calle *</label>
+                                <input type="text" id="urbanizacion" name="urbanizacion" placeholder="Ej: Av. El Sol, Jr. Plateros" required>
+                            </div>
+                            <div class="form-grupo">
+                                <label for="referencia">Lugar de Referencia (opcional)</label>
+                                <input type="text" id="referencia" name="referencia" placeholder="Ej: Cerca de la plaza, esquina con...">
                             </div>
                             <div class="form-grupo">
                                 <label><input type="checkbox" id="anonimo" name="anonimo"> Reportar como anónimo</label>
@@ -106,10 +145,30 @@
             </div>
         </section>
         
-        <section id="seguimiento" class="contenedor">
-             <h2>Seguimiento de Reportes</h2>
-             <p>Ingresa el código de tu reporte para ver su estado actual.</p>
-             </section>
+        <section id="seguimiento" class="contenedor-gris">
+            <div class="contenedor">
+                <h2>Seguimiento de Reportes</h2>
+                <p>Ingresa el código de tu reporte para conocer el estado actual de atención.</p>
+                
+                <div class="seguimiento-container">
+                    <form id="form-seguimiento" class="form-seguimiento">
+                        <input type="text" id="codigo-reporte" placeholder="Ingresa código de reporte (ej: R1234567890)" required>
+                        <button type="submit" class="btn">Buscar</button>
+                    </form>
+                </div>
+
+                <div id="resultado-seguimiento" class="resultado-seguimiento" style="display:none;">
+                    <h4 id="titulo-reporte"></h4>
+                    <p><strong>Código:</strong> <span id="codigo-resultado"></span></p>
+                    <p><strong>Tipo:</strong> <span id="tipo-resultado"></span></p>
+                    <p><strong>Descripción:</strong> <span id="desc-resultado"></span></p>
+                    <p><strong>Ubicación:</strong> <span id="ubicacion-resultado"></span></p>
+                    <p><strong>Reportante:</strong> <span id="reportante-resultado"></span></p>
+                    <p><strong>Fecha:</strong> <span id="fecha-resultado"></span></p>
+                    <p><strong>Estado:</strong> <span id="estado-resultado" class="badge"></span></p>
+                </div>
+            </div>
+        </section>
 
         <section id="instrucciones" class="contenedor-gris">
             <div class="contenedor">
@@ -128,6 +187,30 @@
             <p>&copy; 2025 Municipalidad Provincial del Cusco. Todos los derechos reservados.</p>
         </div>
     </footer>
+
+    <!-- Modal de Reporte Exitoso -->
+    <div id="modal-reporte-exitoso" class="modal" style="display:none;">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h2>✅ ¡Reporte Enviado Exitosamente!</h2>
+                <button type="button" class="modal-cerrar" id="btn-cerrar-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Tu reporte ha sido registrado en el sistema.</p>
+                <p style="font-size: 1rem; margin: 20px 0;"><strong>Código de Seguimiento:</strong></p>
+                <div class="codigo-seguimiento">
+                    <span id="codigo-modal"></span>
+                    <button type="button" id="btn-copiar-codigo" class="btn btn-secundario">Copiar</button>
+                </div>
+                <p style="margin-top: 20px; font-size: 0.9rem; color: #666;">
+                    Guarda este código para hacer seguimiento de tu reporte. Puedes buscarlo en la sección "Seguimiento de Reportes".
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btn-cerrar-modal-footer" class="btn btn-primary">Cerrar</button>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>

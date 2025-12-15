@@ -24,18 +24,27 @@
 
     <main class="contenedor">
         <h2>Registro de Administrador</h2>
+        <p style="color: var(--color-error); font-weight: 500;">Se requiere un código de administrador válido para registrarse.</p>
         <form id="form-admin-register">
-            <div class="form-grupo">
-                <label for="admin-reg-nombre">Nombre</label>
-                <input id="admin-reg-nombre" type="text" required>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-grupo">
+                    <label for="admin-reg-nombre">Nombre</label>
+                    <input id="admin-reg-nombre" type="text" required>
+                </div>
+                <div class="form-grupo">
+                    <label for="admin-reg-correo">Correo electrónico</label>
+                    <input id="admin-reg-correo" type="email" required>
+                </div>
             </div>
-            <div class="form-grupo">
-                <label for="admin-reg-correo">Correo electrónico</label>
-                <input id="admin-reg-correo" type="email" required>
-            </div>
-            <div class="form-grupo">
-                <label for="admin-reg-password">Contraseña</label>
-                <input id="admin-reg-password" type="password" required>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-grupo">
+                    <label for="admin-reg-password">Contraseña</label>
+                    <input id="admin-reg-password" type="password" required>
+                </div>
+                <div class="form-grupo">
+                    <label for="admin-reg-codigo">Código de Administrador *</label>
+                    <input id="admin-reg-codigo" type="password" placeholder="Ingresa código" required>
+                </div>
             </div>
             <button class="btn" type="submit">Registrar Administrador</button>
         </form>
