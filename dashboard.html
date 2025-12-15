@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Incidencias - Municipalidad del Cusco</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="contenedor">
+            <div class="logo">
+                <img src="imagen1.jpg" alt="Logo Municipalidad del Cusco" height="50">
+                <span>Reporte Urbano Cusco</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html#reportes">Reportar</a></li>
+                    <li><a href="index.html#seguimiento">Seguimiento</a></li>
+                    <li><a href="dashboard.html" class="btn-login">Dashboard</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="contenedor-dashboard">
+        <h1>Dashboard de Incidencias Urbanas</h1>
+
+        <div class="filtros-container">
+            <div class="form-grupo">
+                <label for="filtro-tipo">Filtrar por Tipo:</label>
+                <select id="filtro-tipo">
+                    <option value="todos">Todos los Tipos</option>
+                    <option value="pista_danada">Pista Dañada</option>
+                    <option value="alumbrado_publico">Alumbrado Público</option>
+                    <option value="basura_acumulada">Basura Acumulada</option>
+                    <option value="senalizacion_defectuosa">Señalización</option>
+                    <option value="otro">Otro</option>
+                </select>
+            </div>
+            <div class="form-grupo">
+                <label for="filtro-estado">Filtrar por Estado:</label>
+                <select id="filtro-estado">
+                    <option value="todos">Todos los Estados</option>
+                    <option value="recibido">Recibido</option>
+                    <option value="en-proceso">En Proceso</option>
+                    <option value="resuelto">Resuelto</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="kpi-container">
+            <div class="kpi-card">
+                <h4>Total de Reportes</h4>
+                <p id="kpi-total">0</p>
+            </div>
+            <div class="kpi-card kpi-recibido">
+                <h4>Recibidos</h4>
+                <p id="kpi-recibidos">0</p>
+            </div>
+            <div class="kpi-card kpi-proceso">
+                <h4>En Proceso</h4>
+                <p id="kpi-proceso">0</p>
+            </div>
+            <div class="kpi-card kpi-resuelto">
+                <h4>Resueltos</h4>
+                <p id="kpi-resueltos">0</p>
+            </div>
+        </div>
+
+        <div class="visualizacion-container">
+            <div class="mapa-container">
+                <h3>Ubicación de Reportes</h3>
+                <div id="mapa-reportes"></div>
+            </div>
+            <div class="grafico-container">
+                <h3>Distribución de Incidencias</h3>
+                <canvas id="grafico-tipos"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="contenedor">
+            <p>&copy; 2025 Municipalidad Provincial del Cusco.</p>
+        </div>
+    </footer>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
