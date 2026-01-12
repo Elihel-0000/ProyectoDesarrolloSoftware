@@ -1,0 +1,40 @@
+node_modules
+# Keep environment variables out of version control
+.env
+node_modules/
+dist
+
+# Archivos de entorno y configuración local
+.env
+.env.*
+
+# Archivos de sistema y temporales
+.DS_Store
+*.log
+uploads/
+*.sqlite
+*.sqlite-journal
+*.tsbuildinfo
+*.tgz
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Prisma DB local
+/prisma/dev.db
+/prisma/dev.db-journal
+
+# Configuración de IDEs
+.idea/
+.vscode/
+
+# Cobertura de tests
+coverage/
+
+# Logs de npm/yarn
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+/generated/prisma

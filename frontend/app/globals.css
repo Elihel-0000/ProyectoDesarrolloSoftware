@@ -1,0 +1,151 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root {
+  --background: #FDFBF9;
+  --foreground: #2D3A4B;
+  --card: #FFFFFF;
+  --card-foreground: #3E6E8C;
+  --popover: #FFFFFF;
+  --popover-foreground: #3E6E8C;
+  --primary: #3E6E8C;
+  --primary-foreground: #FFFFFF;
+  --secondary: #E58593;
+  --secondary-foreground: #FFFFFF;
+  --muted: #F9EAE3;
+  --muted-foreground: #716B94;
+  --accent: #F4C2AA;
+  --accent-foreground: #3E6F8C;
+  --destructive: #B17495;
+  --destructive-foreground: #FFFFFF;
+  --border: #EACABF;
+  --input: #EACABF;
+  --ring: #3E6E8C;
+  --radius: 0.625rem;
+  --chart-1: #3E6E8C;
+  --chart-2: #E58593;
+  --chart-3: #F4C2AA;
+  --chart-4: #B17495;
+  --chart-5: #716B94;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #3E6E8C;
+  --sidebar-primary: #3E6E8C;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F4C2AA;
+  --sidebar-accent-foreground: #3E6F8C;
+  --sidebar-border: #EACABF;
+  --sidebar-ring: #3E6E8C;
+}
+
+.dark {
+  --background: #0f0518;
+  /* Deepest Purple (derived from left side) */
+  --foreground: #fae8ff;
+  /* Light Pinkish White */
+
+  --card: #050505bf;
+  /* Very Dark, 75% opacity */
+  --card-foreground: #ffffff;
+
+  --popover: #050505eb;
+  --popover-foreground: #ffffff;
+
+  --primary: #fb7185;
+  /* Rose/Salmon (derived from right side) - High contrast */
+  --primary-foreground: #0f0518;
+
+  --secondary: #701a75;
+  /* Fuchsia (derived from middle) */
+  --secondary-foreground: #fae8ff;
+
+  --muted: #2e1065;
+  /* Deep Violet */
+  --muted-foreground: #fae8ff;
+  /* Indigo 300 */
+
+  --accent: #4c1d95;
+  /* Violet */
+  --accent-foreground: #fae8ff;
+
+  --destructive: #be123c;
+  /* Rose 700 */
+  --destructive-foreground: #fae8ff;
+
+  --border: #4c1d95;
+  /* Violet Border */
+  --input: #2e1065;
+  --ring: #fb7185;
+  /* Matching Primary */
+
+  --chart-1: #fb7185;
+  /* Rose */
+  --chart-2: #e879f9;
+  /* Fuchsia */
+  --chart-3: #818cf8;
+  /* Indigo */
+  --chart-4: #34d399;
+  /* Emerald (Contrast) */
+  --chart-5: #fbbf24;
+  /* Amber (Contrast) */
+
+  --sidebar: #0f0518;
+  --sidebar-foreground: #fae8ff;
+  --sidebar-primary: #fb7185;
+  --sidebar-primary-foreground: #0f0518;
+  --sidebar-accent: #2e1065;
+  --sidebar-accent-foreground: #fae8ff;
+  --sidebar-border: #4c1d95;
+  --sidebar-ring: #fb7185;
+}
+
+@theme inline {
+  /* optional: --font-sans, --font-serif, --font-mono if they are applied in the layout.tsx */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background: linear-gradient(135deg, var(--background) 0%, var(--accent) 60%, var(--secondary) 100%);
+    background-attachment: fixed;
+  }
+}

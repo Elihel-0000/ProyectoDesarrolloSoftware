@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  correo    String   @unique
+  nombre    String
+  contrasena  String
+
+  rol       String   @default("citizen")
+  // citizen | authority | admin
+
+  estado    String   @default("active")
+  // active | blocked
+
+  avatar    String?
+
+  denuncias     Denuncia[]
+  mensajesEnviados   Mensaje[]           @relation("MensajesEnviados")
+  notificaciones  Notificacion[]
+  tokensReinicio    TokenRestablecimiento[]
+  comentarios   Comentario[]
+  votos         Voto[]
+  @@map("User")
+}
+
+model Denuncia {
+  id          Int      @id @default(autoincrement())
+  titulo       String
+  descripcion String
+  categoria    String
+
+  estado      String   @default("pending")
+  // pending | in_progress | resolved
+
+  latitud     Float?
+  longitud    Float?
+  direccion   String?
+  urlImagen   String?
+
+  creadoEn   DateTime @default(now())
+
+  usuarioId      Int
+  usuario        Usuario     @relation(fields: [usuarioId], references: [id])
+  
+  comentarios Comentario[]
+  votos       Voto[]
+  
+  @@map("Complaint")
+}
+
+model Comentario {
+  id          Int      @id @default(autoincrement())
+  contenido   String
+  creadoEn    DateTime @default(now())
+
+  denunciaId  Int
+  denuncia    Denuncia @relation(fields: [denunciaId], references: [id], onDelete: Cascade)
+  
+  usuarioId   Int
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+  
+  @@map("Comentario")
+}
+
+model Voto {
+  id          Int      @id @default(autoincrement())
+  creadoEn    DateTime @default(now())
+
+  denunciaId  Int
+  denuncia    Denuncia @relation(fields: [denunciaId], references: [id], onDelete: Cascade)
+  
+  usuarioId   Int
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+  
+  @@unique([denunciaId, usuarioId])
+  @@map("Voto")
+}
+
+model Mensaje {
+  id          Int      @id @default(autoincrement())
+  contenido   String
+  creadoEn    DateTime @default(now())
+  leido       Boolean  @default(false)
+
+  denunciaId  Int?
+  
+  remitenteId Int
+  remitente   Usuario  @relation("MensajesEnviados", fields: [remitenteId], references: [id])
+
+  receptorId Int
+  @@map("Message")
+}
+
+model Notificacion {
+  id        Int      @id @default(autoincrement())
+  tipo      String
+  // status_change | message
+  mensaje   String
+  leido      Boolean  @default(false)
+  creadoEn DateTime @default(now())
+
+  usuarioId    Int
+  usuario      Usuario     @relation(fields: [usuarioId], references: [id])
+  @@map("Notification")
+}
+
+model TokenRestablecimiento {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  expiraEn DateTime
+
+  usuarioId    Int
+  usuario      Usuario     @relation(fields: [usuarioId], references: [id])
+  @@map("PasswordResetToken")
+}
